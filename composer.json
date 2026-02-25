@@ -1,0 +1,28 @@
+{
+  "name": "vatnode/eu-vat-rates-data",
+  "description": "EU VAT rates for all 27 member states + UK. Updated daily from EC TEDB, published automatically when rates change.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Iurii Rogulia",
+      "email": "iurii@rogulia.fi",
+      "homepage": "https://github.com/rogulia"
+    }
+  ],
+  "keywords": ["vat", "eu", "european-union", "tax", "rates", "europe"],
+  "homepage": "https://github.com/vatnode/eu-vat-rates-php",
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "VATNode\\EuVatRates\\": "src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "2026.x-dev"
+    }
+  }
+}
