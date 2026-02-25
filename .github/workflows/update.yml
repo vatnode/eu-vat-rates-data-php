@@ -9,6 +9,10 @@ on:
         description: 'Dry run (show diff without publishing)'
         type: boolean
         default: false
+      force_publish:
+        description: 'Force publish even if rates unchanged (for initial release)'
+        type: boolean
+        default: false
 
 jobs:
   update:
@@ -28,34 +32,41 @@ jobs:
       - name: Check for rate changes
         id: diff
         run: |
-          CURRENT=$(python3 -c "import json,sys; print(json.dumps(json.load(open(sys.argv[1]))['rates'],sort_keys=True))" data/eu-vat-rates.json)
-          LATEST=$(python3 -c "import json,sys; print(json.dumps(json.load(open(sys.argv[1]))['rates'],sort_keys=True))" /tmp/latest.json)
-          if [ "$CURRENT" = "$LATEST" ]; then
-            echo "rates_changed=false" >> "$GITHUB_OUTPUT"
-            echo "No rate changes."
-          else
+          if [ "${{ github.event.inputs.force_publish }}" = "true" ]; then
             echo "rates_changed=true" >> "$GITHUB_OUTPUT"
-            echo "Rate changes detected."
+            echo "Force publish requested."
+          else
+            CURRENT=$(python3 -c "import json,sys; print(json.dumps(json.load(open(sys.argv[1]))['rates'],sort_keys=True))" data/eu-vat-rates.json)
+            LATEST=$(python3 -c "import json,sys; print(json.dumps(json.load(open(sys.argv[1]))['rates'],sort_keys=True))" /tmp/latest.json)
+            if [ "$CURRENT" = "$LATEST" ]; then
+              echo "rates_changed=false" >> "$GITHUB_OUTPUT"
+              echo "No rate changes."
+            else
+              echo "rates_changed=true" >> "$GITHUB_OUTPUT"
+              echo "Rate changes detected."
+            fi
           fi
 
       - name: Update bundled data
         if: steps.diff.outputs.rates_changed == 'true'
         run: cp /tmp/latest.json data/eu-vat-rates.json
 
-      - name: Bump version
-        if: steps.diff.outputs.rates_changed == 'true' && github.event.inputs.dry_run != 'true'
-        run: |
-          VERSION=$(date -u +%Y.%m.%d)
-          # Packagist uses git tags for versioning
-          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
-
       - name: Commit, tag and push
         if: steps.diff.outputs.rates_changed == 'true' && github.event.inputs.dry_run != 'true'
         run: |
           DATE=$(date -u +%Y-%m-%d)
+          VERSION=$(date -u +%Y.%-m.%-d)
+          # Avoid duplicate tags
+          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+            COUNT=1
+            while git rev-parse "v${VERSION}.${COUNT}" >/dev/null 2>&1; do
+              COUNT=$((COUNT + 1))
+            done
+            VERSION="${VERSION}.${COUNT}"
+          fi
           git config user.name "vatnode-bot"
           git config user.email "bot@vatnode.dev"
           git add data/eu-vat-rates.json
-          git commit -m "chore: update VAT rates ${DATE} (v${VERSION})"
+          git diff --staged --quiet || git commit -m "chore: update VAT rates ${DATE} (v${VERSION})"
           git tag "v${VERSION}"
           git push && git push --tags
