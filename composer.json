@@ -11,7 +11,7 @@
     }
   ],
   "keywords": ["vat", "eu", "european-union", "tax", "rates", "europe"],
-  "homepage": "https://github.com/vatnode/eu-vat-rates-php",
+  "homepage": "https://github.com/vatnode/eu-vat-rates-data-php",
   "require": {
     "php": ">=8.1"
   },
