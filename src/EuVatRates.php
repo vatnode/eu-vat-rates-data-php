@@ -25,7 +25,7 @@ final class EuVatRates
     private static function load(): array
     {
         if (self::$dataset === null) {
-            $path = __DIR__ . '/../data/eu-vat-rates.json';
+            $path = __DIR__ . '/../data/eu-vat-rates-data.json';
             $json = file_get_contents($path);
             if ($json === false) {
                 throw new \RuntimeException('eu-vat-rates: cannot read data file: ' . $path);
