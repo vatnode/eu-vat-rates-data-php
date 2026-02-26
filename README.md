@@ -2,7 +2,7 @@
 
 [![Packagist Version](https://img.shields.io/packagist/v/vatnode/eu-vat-rates-data)](https://packagist.org/packages/vatnode/eu-vat-rates-data)
 [![PHP Version](https://img.shields.io/packagist/php-v/vatnode/eu-vat-rates-data)](https://packagist.org/packages/vatnode/eu-vat-rates-data)
-[![Last updated](https://img.shields.io/github/last-commit/vatnode/eu-vat-rates-data-php?path=data%2Feu-vat-rates.json&label=last%20updated)](https://github.com/vatnode/eu-vat-rates-data-php/commits/main)
+[![Last updated](https://img.shields.io/github/last-commit/vatnode/eu-vat-rates-data-php?path=data%2Feu-vat-rates-data.json&label=last%20updated)](https://github.com/vatnode/eu-vat-rates-data-php/commits/main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 EU VAT rates for all **27 EU member states** plus the **United Kingdom**, sourced from the [European Commission TEDB](https://taxation-customs.ec.europa.eu/tedb/vatRates.html). Checked daily, published automatically when rates change.
