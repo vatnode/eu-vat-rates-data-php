@@ -10,7 +10,7 @@
       "homepage": "https://github.com/rogulia"
     }
   ],
-  "keywords": ["vat", "eu", "european-union", "tax", "rates", "europe"],
+  "keywords": ["vat", "eu", "european-union", "tax", "rates", "europe", "vat-rates", "eu-vat", "vat-moss", "digital-services-tax", "billing", "e-commerce", "fintech", "invoice"],
   "homepage": "https://github.com/vatnode/eu-vat-rates-data-php",
   "require": {
     "php": ">=8.1"
