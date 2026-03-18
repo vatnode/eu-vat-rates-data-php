@@ -43,6 +43,14 @@ final class SmokeTest extends TestCase
         }
     }
 
+    public function testAllVatNamesNonEmpty(): void
+    {
+        foreach (EuVatRates::getAllRates() as $code => $rate) {
+            $this->assertIsString($rate['vat_name'], "$code: vat_name is not string");
+            $this->assertNotEmpty($rate['vat_name'], "$code: vat_name is empty");
+        }
+    }
+
     public function testDataVersionFormat(): void
     {
         $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', EuVatRates::dataVersion());
