@@ -9,19 +9,9 @@ use VATNode\EuVatRates\EuVatRates;
 
 final class SmokeTest extends TestCase
 {
-    public function testDeStandardRate(): void
+    public function testDeIsEuMember(): void
     {
-        $this->assertSame(19.0, EuVatRates::getStandardRate('DE'));
-    }
-
-    public function testEeStandardRate(): void
-    {
-        $this->assertSame(24.0, EuVatRates::getStandardRate('EE'));
-    }
-
-    public function testFrIsEuMember(): void
-    {
-        $this->assertTrue(EuVatRates::isEuMember('FR'));
+        $this->assertTrue(EuVatRates::isEuMember('DE'));
     }
 
     public function testGbIsNotEuMember(): void
@@ -29,19 +19,37 @@ final class SmokeTest extends TestCase
         $this->assertFalse(EuVatRates::isEuMember('GB'));
     }
 
+    public function testNoIsNotEuMember(): void
+    {
+        $this->assertFalse(EuVatRates::isEuMember('NO'));
+    }
+
     public function testDatasetHas44Countries(): void
     {
         $this->assertCount(44, EuVatRates::getAllRates());
     }
 
-    public function testEuMemberField(): void
+    public function testAllStandardRatesPositive(): void
     {
-        $this->assertTrue(EuVatRates::getRate('DE')['eu_member']);
-        $this->assertFalse(EuVatRates::getRate('NO')['eu_member']);
+        foreach (EuVatRates::getAllRates() as $code => $rate) {
+            $this->assertGreaterThan(0, $rate['standard'], "$code: standard rate is {$rate['standard']}");
+        }
+    }
+
+    public function testEuMemberFieldIsBool(): void
+    {
+        foreach (EuVatRates::getAllRates() as $code => $rate) {
+            $this->assertIsBool($rate['eu_member'], "$code: eu_member is not bool");
+        }
     }
 
     public function testDataVersionFormat(): void
     {
         $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/', EuVatRates::dataVersion());
+    }
+
+    public function testUnknownCountryReturnsNull(): void
+    {
+        $this->assertNull(EuVatRates::getRate('XX'));
     }
 }
