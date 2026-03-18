@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace VATNode\EuVatRates;
 
 /**
- * EU VAT rates for all 27 member states + UK.
+ * VAT rates for 44 European countries (EU-27 + 17 non-EU).
  *
- * Data sourced from the European Commission TEDB (Taxes in Europe Database).
- * Updated daily, published automatically when rates change.
+ * EU rates sourced from the European Commission TEDB (Taxes in Europe Database),
+ * checked daily. Non-EU rates maintained manually.
  *
  * Usage:
  *   $rate = EuVatRates::getRate('FI');
- *   // ['country' => 'Finland', 'currency' => 'EUR', 'standard' => 25.5, ...]
+ *   // ['country' => 'Finland', 'currency' => 'EUR', 'eu_member' => true,
+ *   //  'standard' => 25.5, 'reduced' => [10.0, 13.5], ...]
  *
  *   EuVatRates::getStandardRate('DE');  // 19.0
+ *   EuVatRates::isEuMember('NO');       // false
  *   EuVatRates::isEuMember('FR');       // true
- *   EuVatRates::dataVersion();          // "2026-02-25"
+ *   EuVatRates::dataVersion();          // "2026-03-18"
  */
 final class EuVatRates
 {
@@ -38,8 +40,8 @@ final class EuVatRates
     /**
      * Return the full VAT rate array for a country, or null if not found.
      *
-     * @param  string $countryCode  ISO 3166-1 alpha-2 code (e.g. "FI", "DE", "GB")
-     * @return array{country:string,currency:string,standard:float,reduced:float[],super_reduced:float|null,parking:float|null}|null
+     * @param  string $countryCode  ISO 3166-1 alpha-2 code (e.g. "FI", "DE", "NO")
+     * @return array{country:string,currency:string,eu_member:bool,standard:float,reduced:float[],super_reduced:float|null,parking:float|null}|null
      */
     public static function getRate(string $countryCode): ?array
     {
@@ -60,7 +62,7 @@ final class EuVatRates
     }
 
     /**
-     * Return all 28 country rate arrays keyed by ISO country code.
+     * Return all 44 country rate arrays keyed by ISO country code.
      *
      * @return array<string, array>
      */
@@ -70,20 +72,24 @@ final class EuVatRates
     }
 
     /**
-     * Return true if the country code is in the dataset (EU-27 + GB).
+     * Return true if the country is an EU-27 member state.
+     *
+     * Returns false for non-EU countries in the dataset (GB, NO, CH, etc.)
+     * and for unknown country codes.
      *
      * @param  string $countryCode  ISO 3166-1 alpha-2 code
      * @return bool
      */
     public static function isEuMember(string $countryCode): bool
     {
-        return isset(self::load()['rates'][strtoupper($countryCode)]);
+        $rate = self::getRate($countryCode);
+        return $rate ? (bool) $rate['eu_member'] : false;
     }
 
     /**
-     * Return the ISO 8601 date when data was last fetched from EC TEDB.
+     * Return the ISO 8601 date when EU data was last fetched from EC TEDB.
      *
-     * @return string  e.g. "2026-02-25"
+     * @return string  e.g. "2026-03-18"
      */
     public static function dataVersion(): string
     {
