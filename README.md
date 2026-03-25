@@ -52,6 +52,11 @@ if (EuVatRates::isEuMember($userInput)) {
     $rate = EuVatRates::getRate($userInput);
 }
 
+// Dataset membership check (all 44 countries)
+if (EuVatRates::hasRate($userInput)) {
+    $rate = EuVatRates::getRate($userInput);
+}
+
 // All 44 countries at once
 foreach (EuVatRates::getAllRates() as $code => $rate) {
     echo "{$code}: {$rate['standard']}%\n";
