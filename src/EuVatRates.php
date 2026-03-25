@@ -87,6 +87,20 @@ final class EuVatRates
     }
 
     /**
+     * Return true if the country code is present in the dataset (all 44 countries).
+     *
+     * Use this to check dataset membership for any European country.
+     * For EU membership specifically, use {@see isEuMember()}.
+     *
+     * @param  string $countryCode  ISO 3166-1 alpha-2 code
+     * @return bool
+     */
+    public static function hasRate(string $countryCode): bool
+    {
+        return isset(self::load()['rates'][strtoupper($countryCode)]);
+    }
+
+        /**
      * Return the ISO 8601 date when EU data was last fetched from EC TEDB.
      *
      * @return string  e.g. "2026-03-18"
