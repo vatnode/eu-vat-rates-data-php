@@ -55,15 +55,15 @@ jobs:
         if: steps.diff.outputs.rates_changed == 'true' && github.event.inputs.dry_run != 'true'
         run: |
           DATE=$(date -u +%Y-%m-%d)
-          VERSION=$(date -u +%Y.%-m.%-d)
-          # Avoid duplicate tags
-          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
-            COUNT=1
-            while git rev-parse "v${VERSION}.${COUNT}" >/dev/null 2>&1; do
-              COUNT=$((COUNT + 1))
-            done
-            VERSION="${VERSION}.${COUNT}"
-          fi
+          YEAR=$(date -u +%Y)
+          MONTH=$(date -u +%-m)
+          DAY=$(date -u +%-d)
+          VERSION="${YEAR}.${MONTH}.${DAY}"
+          # Check remote tags to avoid push rejection (shallow clone has no local tags)
+          while git ls-remote --tags origin "refs/tags/v${VERSION}" | grep -q .; do
+            DAY=$((DAY + 1))
+            VERSION="${YEAR}.${MONTH}.${DAY}"
+          done
           git config user.name "vatnode-bot"
           git config user.email "bot@vatnode.dev"
           git add data/eu-vat-rates-data.json
