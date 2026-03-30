@@ -1,6 +1,6 @@
 {
   "name": "vatnode/eu-vat-rates-data",
-  "description": "VAT rates for 44 European countries — EU-27 plus Norway, Switzerland, UK, and more. Updated daily from EC TEDB, published automatically when rates change.",
+  "description": "VAT rates for 44 European countries — EU-27 plus Norway, Switzerland, UK, and more. Updated daily, published automatically when rates change.",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -10,7 +10,22 @@
       "homepage": "https://github.com/rogulia"
     }
   ],
-  "keywords": ["vat", "eu", "european-union", "tax", "rates", "europe", "vat-rates", "eu-vat", "vat-moss", "digital-services-tax", "billing", "e-commerce", "fintech", "invoice"],
+  "keywords": [
+    "vat",
+    "eu",
+    "european-union",
+    "tax",
+    "rates",
+    "europe",
+    "vat-rates",
+    "eu-vat",
+    "vat-moss",
+    "digital-services-tax",
+    "billing",
+    "e-commerce",
+    "fintech",
+    "invoice"
+  ],
   "homepage": "https://github.com/vatnode/eu-vat-rates-data-php",
   "require": {
     "php": ">=8.1"
