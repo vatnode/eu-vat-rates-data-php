@@ -41,7 +41,7 @@ final class EuVatRates
      * Return the full VAT rate array for a country, or null if not found.
      *
      * @param  string $countryCode  ISO 3166-1 alpha-2 code (e.g. "FI", "DE", "NO")
-     * @return array{country:string,currency:string,eu_member:bool,vat_name:string,standard:float,reduced:float[],super_reduced:float|null,parking:float|null}|null
+     * @return array{country:string,currency:string,eu_member:bool,vat_name:string,vat_abbr:string,standard:float,reduced:float[],super_reduced:float|null,parking:float|null,format:string,pattern:string|null}|null
      */
     public static function getRate(string $countryCode): ?array
     {
@@ -100,7 +100,29 @@ final class EuVatRates
         return isset(self::load()['rates'][strtoupper($countryCode)]);
     }
 
-        /**
+    /**
+     * Return true if $vatId matches the expected format for its country.
+     *
+     * Input must include the country code prefix (e.g. "ATU12345678").
+     * Returns false when the country has no standardised format or the ID
+     * does not match.
+     *
+     * Note: Greece uses the "EL" prefix, not "GR".
+     *
+     * @param  string $vatId  VAT number string including country code prefix
+     * @return bool
+     */
+    public static function validateFormat(string $vatId): bool
+    {
+        $code = strtoupper(substr($vatId, 0, 2));
+        $rate = self::getRate($code);
+        if ($rate === null || empty($rate['pattern'])) {
+            return false;
+        }
+        return (bool) preg_match('/' . $rate['pattern'] . '/', strtoupper($vatId));
+    }
+
+    /**
      * Return the ISO 8601 date when EU data was last fetched from EC TEDB.
      *
      * @return string  e.g. "2026-03-18"
