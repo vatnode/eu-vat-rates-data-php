@@ -131,4 +131,23 @@ final class EuVatRates
     {
         return self::load()['version'];
     }
+
+    /**
+     * Return the flag emoji for a 2-letter ISO 3166-1 alpha-2 country code.
+     *
+     * Computed from regional indicator symbols — no lookup table needed.
+     *
+     * @param  string $countryCode  ISO 3166-1 alpha-2 code (e.g. "FI", "DE")
+     * @return string  Flag emoji (e.g. "🇫🇮"), or empty string if input is invalid
+     */
+    public static function getFlag(string $countryCode): string
+    {
+        $code = strtoupper($countryCode);
+        if (strlen($code) !== 2) {
+            return "";
+        }
+        $base = 0x1F1E6;
+        return mb_chr($base + ord($code[0]) - ord("A"), "UTF-8")
+             . mb_chr($base + ord($code[1]) - ord("A"), "UTF-8");
+    }
 }
