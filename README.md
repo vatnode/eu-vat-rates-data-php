@@ -78,6 +78,11 @@ EuVatRates::validateFormat('INVALID');      // → false
 $at = EuVatRates::getRate('AT');
 echo $at['format'];   // "ATU + 8 digits"
 echo $at['pattern'];  // "^ATU\d{8}$"
+
+// Flag emoji from a 2-letter country code — no lookup table, computed from regional indicator symbols
+EuVatRates::getFlag('FI');  // → "🇫🇮"
+EuVatRates::getFlag('DE');  // → "🇩🇪"
+EuVatRates::getFlag('XX');  // → "" (empty string for unknown/invalid codes)
 ```
 
 ---
