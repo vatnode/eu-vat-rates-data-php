@@ -41,7 +41,7 @@ final class EuVatRates
      * Return the full VAT rate array for a country, or null if not found.
      *
      * @param  string $countryCode  ISO 3166-1 alpha-2 code (e.g. "FI", "DE", "NO")
-     * @return array{country:string,currency:string,eu_member:bool,vat_name:string,vat_abbr:string,standard:float,reduced:float[],super_reduced:float|null,parking:float|null,format:string,pattern:string|null}|null
+     * @return array{country:string,currency:string,eu_member:bool,vat_name:string,vat_abbr:string,standard:float,reduced:float[],super_reduced:float|null,parking:float|null,format:string,pattern:string}|null
      */
     public static function getRate(string $countryCode): ?array
     {
