@@ -5,7 +5,7 @@
 [![Last updated](https://img.shields.io/github/last-commit/vatnode/eu-vat-rates-data-php?path=data%2Feu-vat-rates-data.json&label=last%20updated)](https://github.com/vatnode/eu-vat-rates-data-php/commits/main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-VAT rates for **44 European countries** — EU-27 plus Norway, Switzerland, UK, and more. EU rates sourced from the European Commission TEDB and checked daily. Non-EU rates maintained manually.
+VAT rates for **45 European countries** — EU-27 plus Norway, Switzerland, UK, and more. EU rates sourced from the European Commission TEDB and checked daily. Non-EU rates maintained manually.
 
 - Standard, reduced, super-reduced, and parking rates
 - `eu_member` flag on every country — `true` for EU-27, `false` for non-EU
@@ -56,12 +56,12 @@ if (EuVatRates::isEuMember($userInput)) {
     $rate = EuVatRates::getRate($userInput);
 }
 
-// Dataset membership check (all 44 countries)
+// Dataset membership check (all 45 countries)
 if (EuVatRates::hasRate($userInput)) {
     $rate = EuVatRates::getRate($userInput);
 }
 
-// All 44 countries at once
+// All 45 countries at once
 foreach (EuVatRates::getAllRates() as $code => $rate) {
     echo "{$code}: {$rate['standard']}%\n";
 }
