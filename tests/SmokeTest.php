@@ -24,9 +24,9 @@ final class SmokeTest extends TestCase
         $this->assertFalse(EuVatRates::isEuMember('NO'));
     }
 
-    public function testDatasetHas44Countries(): void
+    public function testDatasetHas45Countries(): void
     {
-        $this->assertCount(44, EuVatRates::getAllRates());
+        $this->assertCount(45, EuVatRates::getAllRates());
     }
 
     public function testAllStandardRatesPositive(): void

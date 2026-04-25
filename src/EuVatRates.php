@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace VATNode\EuVatRates;
 
 /**
- * VAT rates for 44 European countries (EU-27 + 17 non-EU).
+ * VAT rates for 45 European countries (EU-27 + 17 non-EU).
  *
  * EU rates sourced from the European Commission TEDB (Taxes in Europe Database),
  * checked daily. Non-EU rates maintained manually.
@@ -62,7 +62,7 @@ final class EuVatRates
     }
 
     /**
-     * Return all 44 country rate arrays keyed by ISO country code.
+     * Return all 45 country rate arrays keyed by ISO country code.
      *
      * @return array<string, array>
      */
@@ -87,7 +87,7 @@ final class EuVatRates
     }
 
     /**
-     * Return true if the country code is present in the dataset (all 44 countries).
+     * Return true if the country code is present in the dataset (all 45 countries).
      *
      * Use this to check dataset membership for any European country.
      * For EU membership specifically, use {@see isEuMember()}.
