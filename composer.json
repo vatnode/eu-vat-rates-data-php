@@ -1,6 +1,6 @@
 {
   "name": "vatnode/eu-vat-rates-data",
-  "description": "VAT rates for 45 European countries — EU-27 plus Norway, Switzerland, UK, and more. Updated daily, published automatically when rates change.",
+  "description": "VAT rates for 45 European countries — EU-27 plus Norway, Switzerland, UK, and more. Updated daily. From vatnode.dev — live VIES validation via API.",
   "type": "library",
   "license": "MIT",
   "authors": [
