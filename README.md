@@ -54,7 +54,7 @@ composer require vatnode/eu-vat-rates-data
 ## Usage
 
 ```php
-use VATNode\EuVatRates\EuVatRates;
+use vatnode\EuVatRates\EuVatRates;
 
 // Full rate array for a country
 $fi = EuVatRates::getRate('FI');

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VATNode\EuVatRates;
+namespace vatnode\EuVatRates;
 
 /**
  * VAT rates for 45 European countries (EU-27 + 17 non-EU).

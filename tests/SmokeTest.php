@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VATNode\EuVatRates\Tests;
+namespace vatnode\EuVatRates\Tests;
 
 use PHPUnit\Framework\TestCase;
-use VATNode\EuVatRates\EuVatRates;
+use vatnode\EuVatRates\EuVatRates;
 
 final class SmokeTest extends TestCase
 {
