@@ -115,6 +115,11 @@ final class EuVatRates
     public static function validateFormat(string $vatId): bool
     {
         $code = strtoupper(substr($vatId, 0, 2));
+        // Greek VAT numbers carry the VIES prefix EL, while the dataset keys
+        // Greece under its ISO code GR.
+        if ($code === 'EL') {
+            $code = 'GR';
+        }
         $rate = self::getRate($code);
         if ($rate === null || empty($rate['pattern'])) {
             return false;
