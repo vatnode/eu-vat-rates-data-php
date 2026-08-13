@@ -109,6 +109,56 @@ EuVatRates::getFlag('XX');  // → "" (empty string for unknown/invalid codes)
 
 ---
 
+## Example: charging VAT on an invoice
+
+Rates on their own rarely answer the question you actually have, which is what
+to put on the invoice. Two rules cover most of it: charge the buyer's domestic
+rate, unless the sale is cross-border B2B inside the EU, where the reverse
+charge applies and you invoice 0%.
+
+```php
+use vatnode\EuVatRates\EuVatRates;
+
+/** Money in minor units (cents). Never floats. */
+function invoiceTotal(
+    int $netCents,
+    string $sellerCountry,
+    string $buyerCountry,
+    ?string $buyerVatId = null
+): array {
+    $isCrossBorderB2B = $buyerCountry !== $sellerCountry
+        && $buyerVatId !== null
+        && EuVatRates::validateFormat($buyerVatId);
+
+    if ($isCrossBorderB2B) {
+        return ['vat_cents' => 0, 'total_cents' => $netCents, 'reverse_charge' => true];
+    }
+
+    $rate = EuVatRates::getStandardRate($buyerCountry);
+    $vatCents = (int) round($netCents * $rate / 100);
+
+    return [
+        'vat_cents' => $vatCents,
+        'total_cents' => $netCents + $vatCents,
+        'reverse_charge' => false,
+    ];
+}
+
+// Domestic sale in Finland — 25.5%
+invoiceTotal(10000, 'FI', 'FI');
+// → ['vat_cents' => 2550, 'total_cents' => 12550, 'reverse_charge' => false]
+
+// Finnish seller, German business buyer — reverse charge
+invoiceTotal(10000, 'FI', 'DE', 'DE123456789');
+// → ['vat_cents' => 0, 'total_cents' => 10000, 'reverse_charge' => true]
+```
+
+`validateFormat()` only checks the shape of the number. Applying the reverse charge
+requires the buyer to actually be VAT-registered, which is a VIES lookup — see
+above.
+
+---
+
 ## Data source & update frequency
 
 How the daily check works, and what changed when: [vatnode.dev/data](https://vatnode.dev/data?ref=rates-readme-php).
