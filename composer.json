@@ -26,7 +26,12 @@
     "fintech",
     "invoice"
   ],
-  "homepage": "https://github.com/vatnode/eu-vat-rates-data-php",
+  "homepage": "https://vatnode.dev/vat-rates?ref=rates-packagist",
+  "support": {
+    "issues": "https://github.com/vatnode/eu-vat-rates-data-php/issues",
+    "source": "https://github.com/vatnode/eu-vat-rates-data-php",
+    "docs": "https://vatnode.dev/vat-rates?ref=rates-packagist"
+  },
   "require": {
     "php": ">=8.1"
   },
