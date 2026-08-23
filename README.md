@@ -1,11 +1,15 @@
 # eu-vat-rates-data · PHP
 
 [![Packagist Version](https://img.shields.io/packagist/v/vatnode/eu-vat-rates-data)](https://packagist.org/packages/vatnode/eu-vat-rates-data)
+[![Packagist downloads](https://img.shields.io/packagist/dt/vatnode/eu-vat-rates-data)](https://packagist.org/packages/vatnode/eu-vat-rates-data)
+[![Test](https://github.com/vatnode/eu-vat-rates-data-php/actions/workflows/test.yml/badge.svg)](https://github.com/vatnode/eu-vat-rates-data-php/actions/workflows/test.yml)
 [![PHP Version](https://img.shields.io/packagist/php-v/vatnode/eu-vat-rates-data)](https://packagist.org/packages/vatnode/eu-vat-rates-data)
 [![Last updated](https://img.shields.io/github/last-commit/vatnode/eu-vat-rates-data-php?path=data%2Feu-vat-rates-data.json&label=last%20updated)](https://github.com/vatnode/eu-vat-rates-data-php/commits/main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 VAT rates for **45 European countries** — EU-27 plus Norway, Switzerland, UK, and more. EU rates sourced from the European Commission TEDB and checked daily. Non-EU rates maintained manually.
+
+Part of **[VATNode VAT Rates](https://vatnode.dev/vat-rates)** · [canonical dataset](https://github.com/vatnode/eu-vat-rates-data) · [methodology](https://vatnode.dev/data) · other languages: [JavaScript](https://github.com/vatnode/eu-vat-rates-data-js), [Python](https://github.com/vatnode/eu-vat-rates-data-python), [Go](https://github.com/vatnode/eu-vat-rates-data-go), [Ruby](https://github.com/vatnode/eu-vat-rates-data-ruby)
 
 - Standard, reduced, super-reduced, and parking rates
 - `eu_member` flag on every country — `true` for EU-27, `false` for non-EU
@@ -111,10 +115,9 @@ EuVatRates::getFlag('XX');  // → "" (empty string for unknown/invalid codes)
 
 ## Example: charging VAT on an invoice
 
-Rates on their own rarely answer the question you actually have, which is what
-to put on the invoice. Two rules cover most of it: charge the buyer's domestic
-rate, unless the sale is cross-border B2B inside the EU, where the reverse
-charge applies and you invoice 0%.
+Rates alone do not determine invoice treatment. Resolve place-of-supply,
+customer status, category, exemptions, and any reverse-charge eligibility in
+your tax logic first; then use the dataset for the applicable numeric rate.
 
 ```php
 use vatnode\EuVatRates\EuVatRates;
@@ -122,15 +125,10 @@ use vatnode\EuVatRates\EuVatRates;
 /** Money in minor units (cents). Never floats. */
 function invoiceTotal(
     int $netCents,
-    string $sellerCountry,
     string $buyerCountry,
-    ?string $buyerVatId = null
+    bool $reverseChargeEligible = false
 ): array {
-    $isCrossBorderB2B = $buyerCountry !== $sellerCountry
-        && $buyerVatId !== null
-        && EuVatRates::validateFormat($buyerVatId);
-
-    if ($isCrossBorderB2B) {
+    if ($reverseChargeEligible) {
         return ['vat_cents' => 0, 'total_cents' => $netCents, 'reverse_charge' => true];
     }
 
@@ -145,17 +143,16 @@ function invoiceTotal(
 }
 
 // Domestic sale in Finland — 25.5%
-invoiceTotal(10000, 'FI', 'FI');
+invoiceTotal(10000, 'FI');
 // → ['vat_cents' => 2550, 'total_cents' => 12550, 'reverse_charge' => false]
 
 // Finnish seller, German business buyer — reverse charge
-invoiceTotal(10000, 'FI', 'DE', 'DE123456789');
+invoiceTotal(10000, 'DE', true);
 // → ['vat_cents' => 0, 'total_cents' => 10000, 'reverse_charge' => true]
 ```
 
-`validateFormat()` only checks the shape of the number. Applying the reverse charge
-requires the buyer to actually be VAT-registered, which is a VIES lookup — see
-above.
+`$reverseChargeEligible` must come from applicable tax logic and evidence.
+`validateFormat()` only checks a number's shape; it does not establish registration or eligibility.
 
 ---
 

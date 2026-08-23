@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace vatnode\EuVatRates;
 
 /**
- * VAT rates for 45 European countries (EU-27 + 17 non-EU).
+ * VAT rates for 45 European jurisdictions (EU-27 + 18 non-EU/special VAT jurisdictions).
  *
  * EU rates sourced from the European Commission TEDB (Taxes in Europe Database),
  * checked daily. Non-EU rates maintained manually.
@@ -152,7 +152,16 @@ final class EuVatRates
             return "";
         }
         $base = 0x1F1E6;
-        return mb_chr($base + ord($code[0]) - ord("A"), "UTF-8")
-             . mb_chr($base + ord($code[1]) - ord("A"), "UTF-8");
+        return self::encodeCodePoint($base + ord($code[0]) - ord("A"))
+             . self::encodeCodePoint($base + ord($code[1]) - ord("A"));
+    }
+
+    /** Encode the four-byte Unicode code points used by regional indicators. */
+    private static function encodeCodePoint(int $codePoint): string
+    {
+        return chr(0xF0 | ($codePoint >> 18))
+             . chr(0x80 | (($codePoint >> 12) & 0x3F))
+             . chr(0x80 | (($codePoint >> 6) & 0x3F))
+             . chr(0x80 | ($codePoint & 0x3F));
     }
 }
